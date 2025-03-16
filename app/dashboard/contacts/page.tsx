@@ -1,4 +1,4 @@
-import { ContactsTable } from "@/components/ContactsTable";
+import { ContactsTable } from "@/components/Tables/ContactsTable/ContactsTable";
 import { Button } from "@/components/ui/button";
 import { getContacts } from "@/services/constantContact.service";
 import Link from "next/link";

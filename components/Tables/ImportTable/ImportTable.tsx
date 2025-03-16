@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ContactsTable } from "@/components/ContactsTable";
-import { defaultColumns } from "@/components/ContactsTable";
+import { ContactsTable } from "@/components/Tables/ContactsTable/ContactsTable";
+import { defaultColumns } from "@/components/Tables/ContactsTable/ContactsTable";
 import { type ContactSchema } from "@/schemas/Contact";
 import { ColumnDef } from "@tanstack/react-table";
 import { Card, CardContent, CardTitle, CardHeader, CardFooter, CardDescription } from "@/components/ui/card";
@@ -51,6 +51,8 @@ const statusColumn: ColumnDef<ContactWithStatus> = {
           <Dialog>
             <DialogTrigger asChild>
               <Button 
+                role="button"
+                aria-label="view error"
                 variant="ghost" 
                 size="icon" 
                 className="h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -95,7 +97,7 @@ export function ImportTable({
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button onClick={onUpload} disabled={isProcessing}>
+        <Button role="button" onClick={onUpload} disabled={isProcessing}>
           {isProcessing ? "Uploading..." : "Upload Contacts"}
         </Button>
       </CardFooter>

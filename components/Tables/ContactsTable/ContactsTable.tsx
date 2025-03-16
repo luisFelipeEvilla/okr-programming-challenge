@@ -207,13 +207,8 @@ export function ContactsTable<TData>({
             Previous
           </Button>
           <div className="flex items-center gap-1 text-sm">
-            <span>Page</span>
-            <span className="font-medium">
-              {table.getState().pagination.pageIndex + 1}
-            </span>
-            <span>of</span>
-            <span className="font-medium">
-              {table.getPageCount()}
+            <span>
+              {`Page ${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`}
             </span>
           </div>
           <Button
