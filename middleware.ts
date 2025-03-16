@@ -8,7 +8,11 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Define public paths that don't require authentication
-  const isPublicPath = path === '/login' || path === '/api/auth/callback/constantcontact'
+  const isPublicPath = path === '/login' || 
+                      path === '/api/auth/callback/constantcontact' || 
+                      path.startsWith('/_next') || 
+                      path.startsWith('/images') ||
+                      path === '/favicon.ico'
 
   // Get the token from cookies
   const cookieStore = await cookies()
@@ -22,7 +26,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect to dashboard if accessing login with valid token
-  if (token && isPublicPath) {
+  if (token && path === '/login') {
     return NextResponse.redirect(new URL('/dashboard/contacts', request.url))
   }
 
@@ -32,7 +36,14 @@ export async function middleware(request: NextRequest) {
 // Configure the paths that should be handled by this middleware
 export const config = {
   matcher: [
-    // Match all paths except static files and API routes
-    '/((?!_next/static|_next/image*|images|favicon.ico).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - _next/data (getServerSideProps data)
+     * - favicon.ico (favicon file)
+     * - public folder files (images, etc)
+     */
+    '/((?!_next/static|_next/image|_next/data|favicon.ico|museum.jpg|login-banner.png|logo.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
   ],
 } 
