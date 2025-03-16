@@ -45,9 +45,7 @@ export async function GET(request: Request) {
     redirectResponse.cookies.set({
       name: "cc_access_token",
       value: access_token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      httpOnly: false,
       expires: expirationDate,
       path: "/",
     });

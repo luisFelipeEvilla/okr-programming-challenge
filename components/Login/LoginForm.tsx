@@ -21,7 +21,6 @@ export function LoginForm({
     url.searchParams.set("scope", "contact_data");
     url.searchParams.set("state", "235o250eddsdff");
 
-    console.log(url.toString());
     window.location.href = url.toString();
   }
 
