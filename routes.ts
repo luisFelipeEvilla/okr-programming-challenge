@@ -14,11 +14,6 @@ export type RouteGroup = {
 
 export const mainRoutes: Route[] = [
     {
-        url: "/dashboard",
-        title: "Dashboard",
-        icon: Home,
-    },
-    {
         url: "/dashboard/contacts",
         title: "Contacts",
         icon: Users,

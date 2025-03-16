@@ -50,7 +50,6 @@ export function ImportForm({ onImport }: ImportFormProps) {
     setIsProcessing(true);
     setParseError(null);
     setValidationError(null);
-    
 
     readCsvFile(data.file, handleParse, (error) => {
       setParseError(`Failed to parse CSV file: ${error.message}`);
@@ -141,6 +140,7 @@ export function ImportForm({ onImport }: ImportFormProps) {
       <CardContent>
         <Form {...form}>
           <form
+            role="form"
             className="space-y-4"
             onSubmit={form.handleSubmit(handleImport)}
           >
@@ -205,7 +205,12 @@ export function ImportForm({ onImport }: ImportFormProps) {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isProcessing} name="Import Contacts" role="button">
+              <Button
+                type="submit"
+                disabled={isProcessing}
+                name="Import Contacts"
+                role="button"
+              >
                 {isProcessing ? "Processing..." : "Import Contacts"}
               </Button>
             </div>

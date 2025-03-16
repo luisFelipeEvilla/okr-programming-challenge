@@ -37,7 +37,6 @@ describe("Header", () => {
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(screen.getByRole("navigation")).toBeInTheDocument();
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
   it("renders breadcrumb with nested route", () => {
@@ -45,14 +44,9 @@ describe("Header", () => {
 
     customRender(<Header />);
 
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Contacts")).toBeInTheDocument();
 
-    // First item should be a link, last item should be text
-    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
-      "href",
-      "/dashboard"
-    );
+
     expect(screen.getByText("Contacts")).not.toHaveAttribute("href");
   });
 
@@ -61,15 +55,10 @@ describe("Header", () => {
 
     customRender(<Header />);
 
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Contacts")).toBeInTheDocument();
     expect(screen.getByText("Import")).toBeInTheDocument();
 
     // Check links and current page
-    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
-      "href",
-      "/dashboard"
-    );
     expect(screen.getByRole("link", { name: "Contacts" })).toHaveAttribute(
       "href",
       "/dashboard/contacts"

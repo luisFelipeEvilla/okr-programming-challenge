@@ -24,6 +24,7 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
       exclude: [
         "node_modules/",
+        // coverage
         "html/",
         "dist/",
         "build/",
@@ -32,6 +33,8 @@ export default defineConfig({
         "**/*.test.ts",
         "**/*.test.tsx",
         "**/ui/**",
+        // ignore .mjs
+        "**/*.mjs"
       ],
     },
   },
