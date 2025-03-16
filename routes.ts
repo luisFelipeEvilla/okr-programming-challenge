@@ -1,12 +1,12 @@
-import { Home, Users, LucideIcon } from "lucide-react";
+import { Home, Users, LucideIcon, Upload } from "lucide-react";
 
-type Route = {
+export type Route = {
     url: string;
     title: string;
     icon: LucideIcon;
 }
 
-type RouteGroup = {
+export type RouteGroup = {
     title: string;
     initialRoute: Route;
     routes: Route[];
@@ -22,6 +22,11 @@ export const mainRoutes: Route[] = [
         url: "/dashboard/contacts",
         title: "Contacts",
         icon: Users,
+    },
+    {
+        url: "/dashboard/contacts/import",
+        title: "Import",
+        icon: Upload,
     }
 ]
 
