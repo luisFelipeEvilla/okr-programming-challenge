@@ -1,9 +1,24 @@
-import { contacts } from "@/mock/contacts"
-import { ContactsTable } from "@/components/ContactsTable"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { ContactsTable } from "@/components/ContactsTable";
+import { Button } from "@/components/ui/button";
+import { api_url } from "@/config";
+import axios from "axios";
+import { cookies } from "next/headers";
+import Link from "next/link";
 
-export default function ContactsPage() {
+async function getContacts() {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("cc_access_token")?.value;
+    const response = await axios.get(`${api_url}/contacts`, {
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
+    });
+    return response.data.contacts;
+}
+
+export default async function ContactsPage() {
+    const contacts = await getContacts();
+
     return (
         <div className="container mx-auto py-10">
             <div className="flex flex-col gap-4">

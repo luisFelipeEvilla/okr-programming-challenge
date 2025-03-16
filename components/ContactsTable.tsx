@@ -21,12 +21,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Contact } from "@/lib/types";
-import { Badge } from "@/components/ui/badge";
+import { Contact } from "@/app/lib/types";
 
 const columns: ColumnDef<Contact>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "first_name",
     header: ({ column }) => {
       return (
         <Button
@@ -41,7 +40,7 @@ const columns: ColumnDef<Contact>[] = [
     },
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "last_name",
     header: ({ column }) => {
       return (
         <Button
@@ -56,30 +55,16 @@ const columns: ColumnDef<Contact>[] = [
     },
   },
   {
-    accessorKey: "email",
+    accessorKey: "email_address.address",
     header: "Email",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as "pending" | "synced";
-      return (
-        <Badge
-          variant={status === "synced" ? "default" : "secondary"}
-          className={
-            status === "synced"
-              ? "bg-green-100 text-green-800 hover:bg-green-200"
-              : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-          }
-        >
-          {status}
-        </Badge>
-      );
+      const email = row.original.email_address.address;
+      return <div>{email}</div>;
     },
   },
+
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: ({ column }) => {
       return (
         <Button
@@ -93,14 +78,14 @@ const columns: ColumnDef<Contact>[] = [
       );
     },
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
-      return <div>{date.toLocaleDateString()}</div>;
+      const date = new Date(row.getValue("created_at"));
+      return <div>{date.toLocaleString()}</div>;
     },
   },
 ];
 
 interface ContactsTableProps {
-  data: Contact[];
+  data: any[];
 }
 
 export function ContactsTable({ data }: ContactsTableProps) {
@@ -122,6 +107,8 @@ export function ContactsTable({ data }: ContactsTableProps) {
       },
     },
   });
+
+  console.log(data);
 
   return (
     <div className="w-full space-y-4">
