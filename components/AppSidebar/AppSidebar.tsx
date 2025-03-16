@@ -60,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 size="sm"
                 className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/10 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
               >
-                <Settings2 className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
+                <Settings2 data-testid="settings2-icon" className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
                 <span className="group-data-[collapsible=icon]:hidden">Settings</span>
               </Button>
             </TooltipTrigger>
@@ -83,7 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   rel="noopener noreferrer"
                   className="flex items-center"
                 >
-                  <HelpCircle className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
+                  <HelpCircle data-testid="help-circle-icon" className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
                   <span className="group-data-[collapsible=icon]:hidden">Support</span>
                 </a>
               </Button>
@@ -98,12 +98,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                role="button"
+                data-testid="log-out-button"
                 variant="ghost"
                 size="sm"
                 className="w-full justify-start text-red-500/70 hover:text-red-500 hover:bg-red-500/10 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
                 onClick={handleLogout}
               >
-                <LogOut className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
+                <LogOut data-testid="log-out-icon" className="mr-3 h-4 w-4 group-data-[collapsible=icon]:mr-0" />
                 <span className="group-data-[collapsible=icon]:hidden">Sign out</span>
               </Button>
             </TooltipTrigger>
