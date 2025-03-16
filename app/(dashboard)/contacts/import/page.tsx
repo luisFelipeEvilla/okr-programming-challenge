@@ -94,17 +94,18 @@ export default function ImportContactsPage() {
               });
 
               // If we found duplicates, throw a validation error
-              if (duplicateEmails.size > 0) {
-                const error = new ZodError([
-                  {
-                    code: "custom",
-                    path: ["email"],
-                    message: `Duplicate email addresses found: ${Array.from(duplicateEmails).join(", ")}`,
-                  },
-                ]);
-                throw error;
-              }
+            //   if (duplicateEmails.size > 0) {
+            //     const error = new ZodError([
+            //       {
+            //         code: "custom",
+            //         path: ["email"],
+            //         message: `Duplicate email addresses found: ${Array.from(duplicateEmails).join(", ")}`,
+            //       },
+            //     ]);
+            //     throw error;
+            //   }
 
+              console.log(contacts);
               setContacts(contacts);
               toast.success(
                 `Successfully validated ${contacts.length} contacts`
