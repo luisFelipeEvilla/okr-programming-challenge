@@ -150,6 +150,8 @@ export function ImportForm({ onImport }: ImportFormProps) {
               render={() => (
                 <FormItem className="space-y-4">
                   <FileInput
+                    role="input"
+                    data-testid="file-input"
                     accept=".csv"
                     error={form.formState.errors.file?.message}
                     onFileSelect={(file) => {
@@ -184,7 +186,7 @@ export function ImportForm({ onImport }: ImportFormProps) {
               )}
             />
 
-            {validationError && <ValidationErrors error={validationError} />}
+            <ValidationErrors error={validationError} />
             {parseError && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
@@ -197,11 +199,13 @@ export function ImportForm({ onImport }: ImportFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push("/contacts")}
+                onClick={() => router.push("/dashboard/contacts")}
+                role="button"
+                name="Cancel"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isProcessing}>
+              <Button type="submit" disabled={isProcessing} name="Import Contacts" role="button">
                 {isProcessing ? "Processing..." : "Import Contacts"}
               </Button>
             </div>
