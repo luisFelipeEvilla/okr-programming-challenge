@@ -35,9 +35,9 @@ export default function RootLayout({
           <AppSidebar />
           <SidebarInset>
             <Header />
-            <main className="p-4">
+            <div className="max-w-full p-4">
               {children}
-            </main>
+            </div>
             <ToastContainer />
           </SidebarInset>
         </Providers>

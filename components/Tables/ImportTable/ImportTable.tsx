@@ -6,7 +6,7 @@ import { ContactsTable } from "@/components/ContactsTable";
 import { defaultColumns } from "@/components/ContactsTable";
 import { type ContactSchema } from "@/schemas/Contact";
 import { ColumnDef } from "@tanstack/react-table";
-import { Card, CardContent, CardTitle, CardHeader, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardTitle, CardHeader, CardFooter, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
 
@@ -23,9 +23,7 @@ interface ImportTableProps {
   isProcessing: boolean;
 }
 
-const statusColumn: ColumnDef<
-  ContactSchema & { status: ContactStatus; errorMessage?: string }
-> = {
+const statusColumn: ColumnDef<ContactWithStatus> = {
   accessorKey: "status",
   header: "Status",
   cell: ({ row }) => {
@@ -55,16 +53,16 @@ const statusColumn: ColumnDef<
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+                className="h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Eye className="h-4 w-4" />
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="text-red-600">Import Error</DialogTitle>
+                <DialogTitle className="text-destructive">Import Error</DialogTitle>
               </DialogHeader>
-              <div className="p-4 bg-red-50 rounded-lg border border-red-100 text-red-700 text-sm">
+              <div className="p-4 rounded-lg bg-destructive/10 text-destructive">
                 {errorMessage}
               </div>
             </DialogContent>
@@ -81,23 +79,24 @@ export function ImportTable({
   isProcessing,
 }: ImportTableProps) {
   return (
-    <Card className="w-full">
+    <Card className="">
       <CardHeader>
         <CardTitle>Import Contacts</CardTitle>
+        <CardDescription>
+          Preview the contacts you are importing before uploading, and make sure they are correct.
+        </CardDescription>
       </CardHeader>
-      <CardContent className="overflow-auto">
-        <div className="min-w-[800px]">
+      <CardContent>
+        <div className="relative w-full overflow-auto">
           <ContactsTable
             data={contacts}
-            columns={
-              [...defaultColumns, statusColumn] as ColumnDef<ContactSchema>[]
-            }
+            columns={[...defaultColumns, statusColumn] as ColumnDef<ContactWithStatus>[]}
           />
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button onClick={onUpload} disabled={isProcessing} size="lg">
-          Upload Contacts
+        <Button onClick={onUpload} disabled={isProcessing}>
+          {isProcessing ? "Uploading..." : "Upload Contacts"}
         </Button>
       </CardFooter>
     </Card>
