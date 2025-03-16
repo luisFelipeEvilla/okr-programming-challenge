@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ImportForm } from "@/components/ImportForm/ImportForm";
 import { ImportTable } from "@/components/Tables/ImportTable/ImportTable";
@@ -8,8 +8,9 @@ import { ProgressModal } from "@/components/ProgressModal/ProgressModal";
 import { type ContactSchema } from "@/schemas/Contact";
 import { createContact } from "@/services/constantContact.service";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
-type ContactStatus = 'pending' | 'success' | 'error';
+type ContactStatus = "pending" | "success" | "error";
 
 interface ContactWithStatus extends ContactSchema {
   status: ContactStatus;
@@ -20,29 +21,55 @@ export default function ImportContactsPage() {
   const router = useRouter();
   const [contacts, setContacts] = useState<ContactWithStatus[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [progress, setProgress] = useState(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleImport = (parsedContacts: ContactSchema[]) => {
-    const contactsWithStatus = parsedContacts.map(contact => ({
+    const contactsWithStatus = parsedContacts.map((contact) => ({
       ...contact,
-      status: 'pending' as const
+      status: "pending" as const,
     }));
     setContacts(contactsWithStatus);
+  };
+
+  const handleCancel = async () => {
+    if (!abortControllerRef.current) return;
+    setIsCanceling(true);
+    abortControllerRef.current.abort();
+    toast.info("Import process canceled");
   };
 
   const handleUpload = async () => {
     setIsProcessing(true);
     setProgress(0);
+    abortControllerRef.current = new AbortController();
 
     for (let i = 0; i < contacts.length; i++) {
       try {
-        await createContact(contacts[i]);
-        setContacts(prev => {
+        if (abortControllerRef.current.signal.aborted) {
+          setContacts((prev) => {
+            const updated = [...prev];
+            // Mark remaining contacts as pending
+            for (let j = i; j < updated.length; j++) {
+              updated[j] = { ...updated[j], status: "pending" };
+            }
+            return updated;
+          });
+          break;
+        }
+
+        await createContact(contacts[i], abortControllerRef.current.signal);
+        setContacts((prev) => {
           const updated = [...prev];
-          updated[i] = { ...updated[i], status: 'success' };
+          updated[i] = { ...updated[i], status: "success" };
           return updated;
         });
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          break;
+        }
+
         let message = "Failed to upload contact";
         if (error instanceof AxiosError) {
           const data = error.response?.data;
@@ -53,13 +80,13 @@ export default function ImportContactsPage() {
         } else if (error instanceof Error) {
           message = error.message;
         }
-        
-        setContacts(prev => {
+
+        setContacts((prev) => {
           const updated = [...prev];
-          updated[i] = { 
-            ...updated[i], 
-            status: 'error',
-            errorMessage: message
+          updated[i] = {
+            ...updated[i],
+            status: "error",
+            errorMessage: message,
           };
           return updated;
         });
@@ -68,12 +95,14 @@ export default function ImportContactsPage() {
     }
 
     setIsProcessing(false);
+    setIsCanceling(false);
+    abortControllerRef.current = null;
   };
 
   return (
     <div className="container py-6 space-y-6">
       <ImportForm onImport={handleImport} />
-      
+
       {contacts.length > 0 && (
         <ImportTable
           contacts={contacts}
@@ -86,6 +115,8 @@ export default function ImportContactsPage() {
         isOpen={isProcessing}
         progress={progress}
         total={contacts.length}
+        onCancel={handleCancel}
+        isCanceling={isCanceling}
       />
     </div>
   );

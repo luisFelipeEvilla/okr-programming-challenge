@@ -6,8 +6,10 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 
 interface ProgressModalProps {
   isOpen: boolean
@@ -15,6 +17,8 @@ interface ProgressModalProps {
   total: number
   title?: string
   description?: string
+  onCancel?: () => void
+  isCanceling?: boolean
 }
 
 export function ProgressModal({
@@ -22,7 +26,9 @@ export function ProgressModal({
   progress,
   total,
   title = "Uploading Contacts",
-  description = "Please wait while your contacts are being uploaded..."
+  description = "Please wait while your contacts are being uploaded...",
+  onCancel,
+  isCanceling = false,
 }: ProgressModalProps) {
   const percentage = Math.round((progress / total) * 100)
 
@@ -39,6 +45,15 @@ export function ProgressModal({
             {progress} of {total} contacts processed ({percentage}%)
           </p>
         </div>
+        <DialogFooter>
+          <Button 
+            variant="destructive" 
+            onClick={onCancel}
+            disabled={isCanceling}
+          >
+            {isCanceling ? "Canceling..." : "Cancel"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

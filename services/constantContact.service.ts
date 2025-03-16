@@ -29,8 +29,8 @@ export async function getContacts() {
     return response.data.contacts;
 }
 
-export async function createContact(contact: ContactSchema) {
-    const response = await client.post("/contacts", contact);
+export async function createContact(contact: ContactSchema, abortSignal?: AbortSignal) {
+    const response = await client.post("/contacts", contact, { signal: abortSignal });
     return response.data;
 }
 
