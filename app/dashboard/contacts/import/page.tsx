@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { ImportForm } from "@/components/ImportForm/ImportForm";
 import { ImportTable } from "@/components/Tables/ImportTable/ImportTable";
 import { ProgressModal } from "@/components/ProgressModal/ProgressModal";
@@ -18,7 +17,6 @@ interface ContactWithStatus extends ContactSchema {
 }
 
 export default function ImportContactsPage() {
-  const router = useRouter();
   const [contacts, setContacts] = useState<ContactWithStatus[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);

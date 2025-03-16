@@ -1,18 +1,7 @@
-import { kindSchema, ContactSchema } from "@/schemas/Contact";
+import { kindSchema, ContactSchema, ContactCsvSchema } from "@/schemas/Contact";
 
 
-export function csvToContact(csv: {
-    first_name: string;
-    last_name: string;
-    address_line_1: string;
-    address_line_2: string;
-    address_city: string;
-    address_state: string;
-    address_zip: string;
-    address_country: string;
-    email: string;
-    phone_number: string;
-}): ContactSchema {
+export function csvToContact(csv: ContactCsvSchema): ContactSchema {
     return {
 
         email_address: {

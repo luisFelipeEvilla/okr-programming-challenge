@@ -8,11 +8,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarRail,
-  SidebarMenuButton,
+  SidebarHeader, SidebarRail
 } from "@/components/ui/sidebar";
 import { routeGroups } from "@/routes";
 import Image from "next/image";

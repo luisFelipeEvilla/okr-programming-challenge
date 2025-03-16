@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import Papa from "papaparse";
 import { AlertCircle } from "lucide-react";
 import FilesPreview from "@/components/FilesPreview/FilesPreview";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { FileInput } from "@/components/ui/file-input";
 import {
+  ContactCsvSchema,
   contactSchema,
   csvFileSchema,
   type CSVFileSchema,
@@ -69,7 +69,7 @@ export function ImportForm({ onImport }: ImportFormProps) {
 
       for (const [index, row] of results) {
         try {
-          const contact = csvToContact(row as any);
+          const contact = csvToContact(row as ContactCsvSchema);
           const parsedContact = contactSchema.parse(contact);
 
           contacts.push(parsedContact);
@@ -147,7 +147,7 @@ export function ImportForm({ onImport }: ImportFormProps) {
             <FormField
               control={form.control}
               name="file"
-              render={({ field }) => (
+              render={() => (
                 <FormItem className="space-y-4">
                   <FileInput
                     accept=".csv"

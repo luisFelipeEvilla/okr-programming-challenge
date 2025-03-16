@@ -3,13 +3,11 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { auth_url, client_id, redirect_uri } from "@/config";
-import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const router = useRouter();
 
   function handleOAuth(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
