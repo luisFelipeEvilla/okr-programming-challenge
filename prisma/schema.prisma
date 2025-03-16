@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  first_name String
+  last_name String
+  email     String   @unique
+  password  String
+
+  // contacts Contact[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// basic contact from contact API
+model Contact {
+  id        String   @id @default(uuid())
+  first_name String
+  last_name String
+  email     String   @unique
+  company_name String?
+  phone_number String?
+  anniversary DateTime?
+  birthday_month Int?
+  birthday_day Int?
+  street_address String?
+  user_id String
+
+  // user User @relation(fields: [user_id], references: [id])
+
+  // TODO: add custom fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum StreetAddressKind {
+  HOME
+  WORK
+  OTHER
+}
+
+model StreetAddress {
+  id        String   @id @default(uuid())
+  kind StreetAddressKind @default(HOME)
+  street String
+  city String
+  state String
+  postal_code String
+  country String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
