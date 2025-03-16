@@ -73,11 +73,9 @@ export default function ImportContactsPage() {
         let message = "Failed to upload contact";
         if (error instanceof AxiosError) {
           const data = error.response?.data;
-          console.log(data);
           if (data instanceof Array) {
             const { error_message } = data[0];
             message = error_message;
-            console.log(message);
           }
         } else if (error instanceof Error) {
           message = error.message;

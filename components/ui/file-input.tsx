@@ -39,7 +39,6 @@ export function FileInput({ className, error, onFileSelect, ...props }: FileInpu
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       const file = e.target.files[0]
-      console.log("File selected:", file);
       onFileSelect(file)
     }
   }
