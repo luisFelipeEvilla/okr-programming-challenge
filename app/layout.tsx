@@ -9,6 +9,7 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+import { ToastContainer } from "react-toastify";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -37,6 +38,7 @@ export default function RootLayout({
             <main className="p-4">
               {children}
             </main>
+            <ToastContainer />
           </SidebarInset>
         </Providers>
       </body>
