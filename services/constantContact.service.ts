@@ -1,7 +1,9 @@
 import { getClientSideCookie } from "@/lib/utils";
 import axios from "axios";
-import { cookies } from "next/headers";
 import { api_url } from "@/config";
+import { ContactSchema } from "@/schemas/Contact";
+
+const { cookies } = await import('next/headers');
 
 const client = axios.create({
   baseURL: api_url,
@@ -25,6 +27,11 @@ client.interceptors.request.use(async (config) => {
 export async function getContacts() {
     const response = await client.get("/contacts");
     return response.data.contacts;
+}
+
+export async function createContact(contact: ContactSchema) {
+    const response = await client.post("/contacts", contact);
+    return response.data;
 }
 
 export default client;

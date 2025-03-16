@@ -1,6 +1,6 @@
 import { ContactsTable } from "@/components/ContactsTable";
 import { Button } from "@/components/ui/button";
-import { getContacts } from "@/services/cc_api";
+import { getContacts } from "@/services/constantContact.service";
 import Link from "next/link";
 
 

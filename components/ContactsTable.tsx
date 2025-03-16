@@ -21,9 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Contact } from "@/app/lib/types";
+import { ContactSchema } from "@/lib/schemas";
 
-const columns: ColumnDef<Contact>[] = [
+const columns: ColumnDef<ContactSchema>[] = [
   {
     accessorKey: "first_name",
     header: ({ column }) => {
@@ -62,7 +62,22 @@ const columns: ColumnDef<Contact>[] = [
       return <div>{email}</div>;
     },
   },
-
+  {
+    accessorKey: "phone_numbers",
+    header: "Phone",
+    cell: ({ row }) => {
+      const phone = row.original.phone_numbers?.map((phone) => phone.phone_number).join(", ");
+      return <div>{phone}</div>;
+    },
+  },
+  {
+    accessorKey: "street_addresses",
+    header: "Address",
+    cell: ({ row }) => {
+      const address = row.original.street_addresses?.map((address) => address.street).join(", ");
+      return <div>{address}</div>;
+    },
+  },
   {
     accessorKey: "created_at",
     header: ({ column }) => {
@@ -85,7 +100,7 @@ const columns: ColumnDef<Contact>[] = [
 ];
 
 interface ContactsTableProps {
-  data: any[];
+  data: ContactSchema[];
 }
 
 export function ContactsTable({ data }: ContactsTableProps) {
@@ -107,8 +122,6 @@ export function ContactsTable({ data }: ContactsTableProps) {
       },
     },
   });
-
-  console.log(data);
 
   return (
     <div className="w-full space-y-4">

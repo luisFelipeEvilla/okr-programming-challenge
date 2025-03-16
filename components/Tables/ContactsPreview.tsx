@@ -28,12 +28,12 @@ export default function ContactsPreview({ contacts }: { contacts: ContactSchema[
           </TableHeader>
           <TableBody>
             {contacts.map((contact) => (
-              <TableRow key={contact.email}>
+              <TableRow key={`${contact.first_name}-${contact.last_name}-${contact.email_address.address}-${contact.phone_numbers?.[0]?.phone_number}`}>
                 <TableCell>{contact.first_name}</TableCell>
                 <TableCell>{contact.last_name}</TableCell>
-                <TableCell>{contact.email}</TableCell>
-                <TableCell>{contact.address_line_1}</TableCell>
-                <TableCell>{contact.phone_number}</TableCell>
+                <TableCell>{contact.email_address.address}</TableCell>
+                <TableCell>{contact.street_addresses?.[0]?.street}</TableCell>
+                <TableCell>{contact.phone_numbers?.[0]?.phone_number}</TableCell>
               </TableRow>
             ))}
           </TableBody>

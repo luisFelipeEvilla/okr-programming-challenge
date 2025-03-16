@@ -21,12 +21,19 @@ import {
   csvFileSchema,
   type CSVFileSchema,
   type ContactSchema,
-} from "@/lib/schemas";
+} from "@/schemas/Contact";
 import { ZodError } from "zod";
 import { toast } from "react-toastify";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ValidationErrors from "@/components/ValidationErrors/ValidationErrors";
-import ContactsPreview from "@/components/Tables/ContactsPreview";
+import { api_url } from "@/config";
+import axios from "axios";
+import { getClientSideCookie } from "@/lib/utils";
+import { csvToContact } from "@/adapters/csvToContact.adapter";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ContactsTable } from "@/components/ContactsTable";
+import { createContact } from "@/services/constantContact.service";
 export default function ImportContactsPage() {
   const router = useRouter();
   const [parseError, setParseError] = useState<string | null>(null);
@@ -34,12 +41,23 @@ export default function ImportContactsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [contacts, setContacts] = useState<ContactSchema[]>([]);
   const [validationError, setValidationError] = useState<ZodError | null>(null);
-
   const form = useForm<CSVFileSchema>({
     resolver: zodResolver(csvFileSchema),
   });
+  const [importedContacts, setImportedContacts] = useState<ContactSchema[]>([]);
 
-  const onSubmit = async (data: CSVFileSchema) => {
+  async function handleSubmit() {
+    for (const contact of contacts) {
+      try {
+        const response = await createContact(contact);
+        setImportedContacts((prev) => [...prev, response]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  const handleParse = async (data: CSVFileSchema) => {
     setIsProcessing(true);
     setParseError(null);
     setValidationError(null);
@@ -58,32 +76,28 @@ export default function ImportContactsPage() {
               const emailSet = new Set<string>();
               const duplicateEmails = new Set<string>();
 
-              // Validate each row and check for duplicates
-              const contacts = results.data.map((row, index) => {
-                try {
-                  const contact = contactSchema.parse({
-                    first_name: row["first_name"] || "",
-                    last_name: row["last_name"] || "",
-                    email: row["email"] || "",
-                    address_line_1: row["address_line_1"] || "",
-                    address_line_2: row["address_line_2"] || "",
-                    address_city: row["address_city"] || "",
-                    address_state: row["address_state"] || "",
-                    address_zip: row["address_zip"] || "",
-                    address_country: row["address_country"] || "",
-                    phone_number: row["phone_number"] || "",
-                  });
+              const contacts: ContactSchema[] = [];
 
-                  // Check for duplicate email
-                  if (emailSet.has(contact.email)) {
-                    duplicateEmails.add(contact.email);
+              // Validate each row and check for duplicates
+              for (const [index, row] of results.data.entries()) {
+                try {
+                  const contact = csvToContact(row as any);
+                  const parsedContact = contactSchema.parse(contact);
+
+                  if (emailSet.has(parsedContact.email_address.address)) {
+                    if (form.getValues("skipDuplicates")) {
+                      continue;
+                    } else {
+                      duplicateEmails.add(parsedContact.email_address.address);
+                    }
                   } else {
-                    emailSet.add(contact.email);
+                    emailSet.add(parsedContact.email_address.address);
                   }
 
-                  return contact;
+                  contacts.push(parsedContact);
                 } catch (error) {
                   if (error instanceof ZodError) {
+                    console.log(error);
                     error.errors.forEach((err) => {
                       err.message = `Row ${index + 1}: ${err.message}`;
                     });
@@ -91,21 +105,22 @@ export default function ImportContactsPage() {
                   }
                   throw error;
                 }
-              });
+              }
 
               // If we found duplicates, throw a validation error
-            //   if (duplicateEmails.size > 0) {
-            //     const error = new ZodError([
-            //       {
-            //         code: "custom",
-            //         path: ["email"],
-            //         message: `Duplicate email addresses found: ${Array.from(duplicateEmails).join(", ")}`,
-            //       },
-            //     ]);
-            //     throw error;
-            //   }
+              if (duplicateEmails.size > 0) {
+                const error = new ZodError([
+                  {
+                    code: "custom",
+                    path: ["email"],
+                    message: `Duplicate email addresses found: ${Array.from(
+                      duplicateEmails
+                    ).join(", ")}`,
+                  },
+                ]);
+                throw error;
+              }
 
-              console.log(contacts);
               setContacts(contacts);
               toast.success(
                 `Successfully validated ${contacts.length} contacts`
@@ -144,7 +159,7 @@ export default function ImportContactsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(handleParse)} className="space-y-8">
             <div className="space-y-4">
               <FileInput
                 accept=".csv"
@@ -158,6 +173,16 @@ export default function ImportContactsPage() {
               {selectedFile && !form.formState.errors.file && (
                 <FilesPreview selectedFile={selectedFile} />
               )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="skipDuplicates"
+                checked={form.getValues("skipDuplicates")}
+                onCheckedChange={(checked: boolean) => {
+                  form.setValue("skipDuplicates", checked);
+                }}
+              />
+              <Label htmlFor="skipDuplicates">Skip duplicates</Label>
             </div>
             {validationError && <ValidationErrors error={validationError} />}
             {parseError && (
@@ -183,7 +208,11 @@ export default function ImportContactsPage() {
         </CardContent>
       </Card>
 
-      <ContactsPreview contacts={contacts} />
+      {contacts.length > 0 && <ContactsTable data={contacts} />}
+
+      <Button onClick={handleSubmit} disabled={isProcessing}>
+        Submit
+      </Button>
     </div>
   );
 }
