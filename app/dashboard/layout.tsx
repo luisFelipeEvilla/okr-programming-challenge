@@ -4,7 +4,7 @@ import "../globals.css";
 import { AppSidebar } from "@/components/AppSidebar/AppSidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 import Providers from "../providers";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

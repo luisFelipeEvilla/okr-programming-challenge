@@ -7,8 +7,8 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
-} from "./ui/breadcrumb";
-import { SidebarTrigger } from "./ui/sidebar";
+} from "../ui/breadcrumb";
+import { SidebarTrigger } from "../ui/sidebar";
 import { usePathname } from "next/navigation";
 import { routeGroups, type Route } from "@/routes";
 import React from "react";
