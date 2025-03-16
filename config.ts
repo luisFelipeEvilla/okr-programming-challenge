@@ -4,3 +4,5 @@ export const redirect_uri = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_REDIRECT_UR
 export const auth_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_AUTH_URL || "https://authz.constantcontact.com/oauth2/default/v1/authorize";
 export const token_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_TOKEN_URL || "https://authz.constantcontact.com/oauth2/default/v1/token";
 export const api_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_API_URL || "https://api.cc.email/v3";
+
+export const cc_access_token_cookie_name = "cc_access_token";

@@ -12,3 +12,7 @@ export const getClientSideCookie = (name: string): string | undefined => {
 
  return cookieValue;
 };
+
+export const removeClientSideCookie = (name: string) => {
+  document.cookie = `${name}=; path=/; max-age=0`;
+};

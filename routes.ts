@@ -14,12 +14,12 @@ type RouteGroup = {
 
 export const mainRoutes: Route[] = [
     {
-        url: "/",
-        title: "Home",
+        url: "/dashboard",
+        title: "Dashboard",
         icon: Home,
     },
     {
-        url: "/contacts",
+        url: "/dashboard/contacts",
         title: "Contacts",
         icon: Users,
     }

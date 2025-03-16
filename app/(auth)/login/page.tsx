@@ -1,6 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { LoginForm } from "@/components/Login/LoginForm";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
@@ -25,10 +26,12 @@ export default function LoginPage() {
           <p className="text-center text-2xl text-muted-foreground justify-center">
             Helping Museums integrate with Altru by Blackbaud
           </p>
-          <img
+          <Image
             src="/login-banner.png"
             alt="Image"
             className="inset-0 h-full w-full object-cover max-w-[600px] max-h-[420px]"
+            width={600}
+            height={420}
           />
         </div>
       </div>

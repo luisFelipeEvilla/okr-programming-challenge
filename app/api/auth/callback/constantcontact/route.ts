@@ -1,5 +1,4 @@
-import { redirect_uri, token_url, client_id, client_secret } from "@/config";
-import { cookies } from "next/headers";
+import { redirect_uri, token_url, client_id, client_secret, cc_access_token_cookie_name } from "@/config";
 import { NextResponse } from "next/server";
 import axios from "axios";
 
@@ -38,12 +37,12 @@ export async function GET(request: Request) {
     expirationDate.setSeconds(expirationDate.getSeconds() + expires_in);
 
     // Create response with redirect
-    const redirectUrl = new URL("/contacts", request.url);
+    const redirectUrl = new URL("/dashboard/contacts", request.url);
     const redirectResponse = NextResponse.redirect(redirectUrl);
 
     // Set the cookie in the response
     redirectResponse.cookies.set({
-      name: "cc_access_token",
+      name: cc_access_token_cookie_name,
       value: access_token,
       httpOnly: false,
       expires: expirationDate,

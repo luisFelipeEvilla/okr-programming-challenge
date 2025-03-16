@@ -32,7 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <main className="p-4">{children}</main>
+          <main className="">{children}</main>
           <ToastContainer />
         </Providers>
       </body>
