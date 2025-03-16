@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import Papa, { ParseError } from "papaparse";
-import { Check, File } from "lucide-react";
-
+import Papa from "papaparse";
+import { AlertCircle } from "lucide-react";
+import FilesPreview from "@/components/FilesPreview/FilesPreview";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,29 +24,25 @@ import {
 } from "@/lib/schemas";
 import { ZodError } from "zod";
 import { toast } from "react-toastify";
-
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import ValidationErrors from "@/components/ValidationErrors/ValidationErrors";
+import ContactsPreview from "@/components/Tables/ContactsPreview";
 export default function ImportContactsPage() {
   const router = useRouter();
   const [parseError, setParseError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [contacts, setContacts] = useState<ContactSchema[]>([]);
+  const [validationError, setValidationError] = useState<ZodError | null>(null);
 
   const form = useForm<CSVFileSchema>({
     resolver: zodResolver(csvFileSchema),
   });
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-  };
-
   const onSubmit = async (data: CSVFileSchema) => {
     setIsProcessing(true);
     setParseError(null);
+    setValidationError(null);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -58,35 +54,69 @@ export default function ImportContactsPage() {
           skipEmptyLines: true,
           complete: async (results) => {
             try {
-              // Validate each row
-              const contacts = results.data.map((row) => {
-                return contactSchema.parse({
-                  first_name: row["first_name"] || "",
-                  last_name: row["last_name"] || "",
-                  email: row["email"] || "",
-                  address_line_1: row["address_line_1"] || "",
-                  address_line_2: row["address_line_2"] || "",
-                  address_city: row["address_city"] || "",
-                  address_state: row["address_state"] || "",
-                  address_zip: row["address_zip"] || "",
-                  address_country: row["address_country"] || "",
-                  phone_number: row["phone_number"] || "",
-                });
+              // First pass: validate basic schema and collect emails
+              const emailSet = new Set<string>();
+              const duplicateEmails = new Set<string>();
+
+              // Validate each row and check for duplicates
+              const contacts = results.data.map((row, index) => {
+                try {
+                  const contact = contactSchema.parse({
+                    first_name: row["first_name"] || "",
+                    last_name: row["last_name"] || "",
+                    email: row["email"] || "",
+                    address_line_1: row["address_line_1"] || "",
+                    address_line_2: row["address_line_2"] || "",
+                    address_city: row["address_city"] || "",
+                    address_state: row["address_state"] || "",
+                    address_zip: row["address_zip"] || "",
+                    address_country: row["address_country"] || "",
+                    phone_number: row["phone_number"] || "",
+                  });
+
+                  // Check for duplicate email
+                  if (emailSet.has(contact.email)) {
+                    duplicateEmails.add(contact.email);
+                  } else {
+                    emailSet.add(contact.email);
+                  }
+
+                  return contact;
+                } catch (error) {
+                  if (error instanceof ZodError) {
+                    error.errors.forEach((err) => {
+                      err.message = `Row ${index + 1}: ${err.message}`;
+                    });
+                    throw error;
+                  }
+                  throw error;
+                }
               });
 
-              // preview the results
-              setContacts(contacts);
-
-              //   Navigate back to contacts list
-              //   router.push("/contacts");
-            } catch (error) {
-              if (error instanceof ZodError) {
-                setParseError(error.message);
-              } else {
-                setParseError("Failed to process CSV file.");
+              // If we found duplicates, throw a validation error
+              if (duplicateEmails.size > 0) {
+                const error = new ZodError([
+                  {
+                    code: "custom",
+                    path: ["email"],
+                    message: `Duplicate email addresses found: ${Array.from(duplicateEmails).join(", ")}`,
+                  },
+                ]);
+                throw error;
               }
 
-              toast.error("Failed to process CSV file.")
+              setContacts(contacts);
+              toast.success(
+                `Successfully validated ${contacts.length} contacts`
+              );
+            } catch (error) {
+              if (error instanceof ZodError) {
+                setValidationError(error);
+                toast.error("Some contacts have validation errors");
+              } else {
+                setParseError("Failed to process CSV file.");
+                toast.error("Failed to process CSV file");
+              }
             } finally {
               setIsProcessing(false);
             }
@@ -94,6 +124,7 @@ export default function ImportContactsPage() {
           error: (error: Error) => {
             setParseError(`Failed to parse CSV file: ${error.message}`);
             setIsProcessing(false);
+            toast.error("Failed to parse CSV file");
           },
         });
       }
@@ -102,7 +133,7 @@ export default function ImportContactsPage() {
   };
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 flex flex-col gap-8">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Import Contacts</CardTitle>
@@ -120,16 +151,20 @@ export default function ImportContactsPage() {
                 onFileSelect={(file) => {
                   form.setValue("file", file);
                   setSelectedFile(file);
+                  setValidationError(null);
                 }}
               />
               {selectedFile && !form.formState.errors.file && (
-                <FilesPreview selectedFile={selectedFile} contacts={contacts} />
+                <FilesPreview selectedFile={selectedFile} />
               )}
             </div>
+            {validationError && <ValidationErrors error={validationError} />}
             {parseError && (
-              <div className="text-sm font-medium text-destructive">
-                {parseError}
-              </div>
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{parseError}</AlertDescription>
+              </Alert>
             )}
             <div className="flex justify-end gap-4">
               <Button
@@ -146,29 +181,8 @@ export default function ImportContactsPage() {
           </form>
         </CardContent>
       </Card>
+
+      <ContactsPreview contacts={contacts} />
     </div>
   );
-
-  function FilesPreview({
-    selectedFile,
-    contacts,
-  }: {
-    selectedFile: File;
-    contacts: ContactSchema[];
-  }) {
-    return (
-      <div className="flex items-center gap-2 rounded-md border bg-muted/50 p-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
-          <File className="h-5 w-5 text-primary" />
-        </div>
-        <div className="flex flex-col">
-          <p className="text-sm font-medium">{selectedFile.name}</p>
-          <p className="text-xs text-muted-foreground">
-            {formatFileSize(selectedFile.size)}
-          </p>
-        </div>
-        <Check className="ml-auto h-5 w-5 text-green-500" />
-      </div>
-    );
-  }
 }

@@ -10,7 +10,7 @@ export const contactSchema = z.object({
   address_state: z.string().optional(),
   address_zip: z.string().optional(),
   address_country: z.string().optional(),
-  phone_number: z.string().min(1, "Phone number is required"),
+  phone_number: z.string().optional(),
 })
 
 export const csvFileSchema = z.object({
