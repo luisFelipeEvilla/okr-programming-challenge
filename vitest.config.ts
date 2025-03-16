@@ -24,6 +24,7 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
       exclude: [
         "node_modules/",
+        "html/",
         "dist/",
         "build/",
         ".next/",

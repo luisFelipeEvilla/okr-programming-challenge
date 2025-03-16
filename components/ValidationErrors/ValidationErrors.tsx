@@ -4,7 +4,9 @@ import { AlertCircle } from "lucide-react";
 import { ZodError } from "zod";
 import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 
-export default function ValidationErrors({ error }: { error: ZodError }) {
+export default function ValidationErrors({ error }: { error: ZodError | null }) {
+  if (!error) return null;
+
   const errorsByField = error.errors.reduce<Record<string, string[]>>(
     (acc, err) => {
       const field = err.path[0] as string;
