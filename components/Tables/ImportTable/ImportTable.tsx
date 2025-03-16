@@ -7,6 +7,8 @@ import { defaultColumns } from "@/components/ContactsTable";
 import { type ContactSchema } from "@/schemas/Contact";
 import { ColumnDef } from "@tanstack/react-table";
 import { Card, CardContent, CardTitle, CardHeader, CardFooter } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Eye } from "lucide-react";
 
 type ContactStatus = "pending" | "success" | "error";
 
@@ -47,14 +49,27 @@ const statusColumn: ColumnDef<
             ? "Failed"
             : "Pending"}
         </Badge>
-        {/* {errorMessage && (
-          <span className="text-sm text-red-600 truncate max-w-[200px]" title={errorMessage}>
-            {errorMessage}
-          </span>
-        )} */}
-           <span className="text-sm text-red-600 truncate max-w-[200px]" title={errorMessage}>
-            {'request failed with status 400'}
-          </span>
+        {errorMessage && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="text-red-600">Import Error</DialogTitle>
+              </DialogHeader>
+              <div className="p-4 bg-red-50 rounded-lg border border-red-100 text-red-700 text-sm">
+                {errorMessage}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     );
   },

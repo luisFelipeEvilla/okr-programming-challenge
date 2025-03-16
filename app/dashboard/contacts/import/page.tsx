@@ -7,6 +7,7 @@ import { ImportTable } from "@/components/Tables/ImportTable/ImportTable";
 import { ProgressModal } from "@/components/ProgressModal/ProgressModal";
 import { type ContactSchema } from "@/schemas/Contact";
 import { createContact } from "@/services/constantContact.service";
+import { AxiosError } from "axios";
 
 type ContactStatus = 'pending' | 'success' | 'error';
 
@@ -42,12 +43,23 @@ export default function ImportContactsPage() {
           return updated;
         });
       } catch (error) {
+        let message = "Failed to upload contact";
+        if (error instanceof AxiosError) {
+          const data = error.response?.data;
+          if (data instanceof Array) {
+            const { error_message } = data[0];
+            message = error_message;
+          }
+        } else if (error instanceof Error) {
+          message = error.message;
+        }
+        
         setContacts(prev => {
           const updated = [...prev];
           updated[i] = { 
             ...updated[i], 
             status: 'error',
-            errorMessage: error instanceof Error ? error.message : 'Failed to upload contact'
+            errorMessage: message
           };
           return updated;
         });
