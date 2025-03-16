@@ -18,7 +18,7 @@ export default function LoginPage() {
             </span>
           </Link>
         </div>
-        
+
         <div className="flex-1 flex items-center justify-center w-full max-w-md mx-auto">
           <div className="w-full space-y-8">
             <div className="space-y-2 text-center">
@@ -36,8 +36,8 @@ export default function LoginPage() {
         <div className="text-center">
           <p className="text-sm text-slate-600 dark:text-slate-400">
             Need help? Contact us at{" "}
-            <a 
-              href="mailto:hello@socialgoodsoftware.com" 
+            <a
+              href="mailto:hello@socialgoodsoftware.com"
               className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
             >
               hello@socialgoodsoftware.com
@@ -55,10 +55,12 @@ export default function LoginPage() {
               Helping Museums integrate with Altru by Blackbaud
             </h2>
             <p className="text-xl leading-relaxed text-slate-600 dark:text-slate-400">
-              The most complete integration solution for Altru. You can now easily dedupe, build, validate, convert, retain, customize, and innovate.
+              The most complete integration solution for Altru. You can now
+              easily dedupe, build, validate, convert, retain, customize, and
+              innovate.
             </p>
           </div>
-          
+
           <div className="relative w-full max-w-4xl">
             {/* Main Desktop Frame */}
             <div className="relative rounded-2xl overflow-hidden bg-white dark:bg-slate-900 shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] ring-1 ring-black/[0.05] dark:ring-white/[0.05]">
@@ -73,20 +75,24 @@ export default function LoginPage() {
                 <Image
                   src="/Untitled-1.png"
                   alt="Social Good Software Dashboard"
+                  role="img"
+                  data-testid="login-banner-image"
                   width={1200}
                   height={675}
                   className="w-full object-cover"
-                  priority
+                  priority={true}
                   quality={100}
                 />
               </div>
             </div>
-            
+
             {/* Floating Elements */}
             <div className="absolute -bottom-6 -right-6 w-48 h-32 rounded-xl overflow-hidden shadow-lg ring-1 ring-black/[0.05] dark:ring-white/[0.05] bg-white dark:bg-slate-900 transform rotate-6">
               <Image
                 src="/Untitled-1.png"
                 alt="Mobile View"
+                role="img"
+                data-testid="login-floating-image"
                 width={400}
                 height={300}
                 className="w-full h-full object-cover"
@@ -98,19 +104,27 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-6 w-full max-w-2xl">
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/50 dark:bg-white/[0.03] backdrop-blur-sm ring-1 ring-black/[0.03] dark:ring-white/[0.03]">
               <CheckCircle2 className="size-5 text-purple-500" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">Deduplication</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">
+                Deduplication
+              </span>
             </div>
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/50 dark:bg-white/[0.03] backdrop-blur-sm ring-1 ring-black/[0.03] dark:ring-white/[0.03]">
               <CheckCircle2 className="size-5 text-purple-500" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">Calendar Builder</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">
+                Calendar Builder
+              </span>
             </div>
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/50 dark:bg-white/[0.03] backdrop-blur-sm ring-1 ring-black/[0.03] dark:ring-white/[0.03]">
               <CheckCircle2 className="size-5 text-purple-500" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">Email Designer</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">
+                Email Designer
+              </span>
             </div>
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/50 dark:bg-white/[0.03] backdrop-blur-sm ring-1 ring-black/[0.03] dark:ring-white/[0.03]">
               <CheckCircle2 className="size-5 text-purple-500" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">Barcode Scanner</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">
+                Barcode Scanner
+              </span>
             </div>
           </div>
 
