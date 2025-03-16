@@ -21,9 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ContactSchema } from "@/lib/schemas";
+import { ContactSchema } from "@/schemas/Contact";
 
-const columns: ColumnDef<ContactSchema>[] = [
+export const defaultColumns: ColumnDef<ContactSchema>[] = [
   {
     accessorKey: "first_name",
     header: ({ column }) => {
@@ -99,11 +99,15 @@ const columns: ColumnDef<ContactSchema>[] = [
   },
 ];
 
-interface ContactsTableProps {
-  data: ContactSchema[];
+interface ContactsTableProps<TData> {
+  data: TData[];
+  columns?: ColumnDef<TData>[];
 }
 
-export function ContactsTable({ data }: ContactsTableProps) {
+export function ContactsTable<TData>({ 
+  data, 
+  columns = defaultColumns as ColumnDef<TData>[]
+}: ContactsTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
