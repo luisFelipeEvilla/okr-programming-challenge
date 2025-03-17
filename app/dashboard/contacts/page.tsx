@@ -13,18 +13,13 @@ import {
     CardDescription,
 } from "@/components/ui/card";
 import { ContactSchema } from "@/schemas/Contact";
-import { getContacts, deleteContact, exportContacts } from "@/services/constantContact.service";
+import { exportContacts } from "@/services/api.service";
+import { getContacts, deleteContact } from "@/services/api.service";
 import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-interface PageData {
-  cursor: string | null;
-  contacts: ContactSchema[];
-  nextCursor: string | null;
-}
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<ContactSchema[]>([]);

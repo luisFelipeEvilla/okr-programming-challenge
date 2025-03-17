@@ -5,7 +5,7 @@ import { ImportForm } from "@/components/Forms/ImportForm/ImportForm";
 import { ImportTable } from "@/components/Tables/ImportTable/ImportTable";
 import { ProgressModal } from "@/components/ProgressModal/ProgressModal";
 import { type ContactSchema } from "@/schemas/Contact";
-import { createContact } from "@/services/constantContact.service";
+import { createContact } from "@/services/api.service";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
@@ -61,7 +61,14 @@ export default function ImportContactsPage() {
           break;
         }
 
-        await createContact(contacts[i], abortControllerRef.current.signal);
+        await createContact({
+          first_name: contacts[i].first_name,
+          last_name: contacts[i].last_name,
+          email_address: contacts[i].email_address,
+          create_source: "Account",
+          street_addresses: contacts[i].street_addresses,
+          phone_numbers: contacts[i].phone_numbers,
+        }, abortControllerRef.current.signal);
         setContacts((prev) => {
           const updated = [...prev];
           updated[i] = { ...updated[i], status: "success" };

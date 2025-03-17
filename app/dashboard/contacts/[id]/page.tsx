@@ -1,5 +1,4 @@
-import { getContact } from "@/services/constantContact.service";
-import { ContactSchema } from "@/schemas/Contact";
+import { getContact } from "@/services/api.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
