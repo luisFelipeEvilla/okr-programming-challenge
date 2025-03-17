@@ -1,4 +1,5 @@
 "use client";
+import DeleteContactButton from "@/components/buttons/DeleteContactButton";
 import {
   ContactsTable,
   defaultColumns,
@@ -11,11 +12,22 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { ContactSchema } from "@/schemas/Contact";
-import { getContacts } from "@/services/constantContact.service";
-import { Eye } from "lucide-react";
+import { getContacts, deleteContact } from "@/services/constantContact.service";
+import { Eye, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface PageData {
   cursor: string | null;
@@ -29,12 +41,11 @@ export default function ContactsPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [cursors, setCursors] = useState<Record<number, string>>({});
-  const [pageCache, setPageCache] = useState<Record<number, ContactSchema[]>>(
-    {}
-  );
+  const [pageCache, setPageCache] = useState<Record<number, ContactSchema[]>>({});
 
-  async function fetchContacts(page: number, cursor?: string) {
+  async function fetchContacts(page: number, cursor?: string | undefined) {
     try {
       setIsLoading(true);
 
@@ -114,6 +125,26 @@ export default function ContactsPage() {
     setPageCache({});
   };
 
+  const handleDelete = async (contactId: string) => {
+    try {
+      setIsDeleting(true);
+      setIsLoading(true);
+      await deleteContact(contactId);
+      toast.success("Contact deleted successfully");
+
+      // Reset pagination and refetch from the beginning
+      setCurrentPage(1);
+      setCursors({});
+      setPageCache({});
+      await fetchContacts(1);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete contact");
+    } finally {
+      setIsDeleting(false);
+      setIsLoading(false);
+    }
+  };
+
   const hasNextPage = Boolean(cursors[currentPage]);
 
   return (
@@ -143,14 +174,27 @@ export default function ContactsPage() {
               columns={[
                 ...defaultColumns,
                 {
-                  header: "Acciones",
+                  header: "Actions",
                   cell: ({ row }) => {
+                    const contact = row.original;
                     return (
-                      <Link href={`/dashboard/contacts/${row.original.contact_id}`}>
-                        <Button variant="outline" size="icon">
-                          <Eye />
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          asChild
+                        >
+                          <Link href={`/dashboard/contacts/${contact.contact_id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
                         </Button>
-                      </Link>
+
+                        <DeleteContactButton
+                          contact={contact}
+                          handleDelete={handleDelete}
+                          isDeleting={isDeleting}
+                        />
+                      </div>
                     );
                   },
                 },

@@ -67,4 +67,9 @@ export async function getContact(contactId: string): Promise<ContactSchema> {
   return response.data;
 }
 
+export async function deleteContact(contactId: string) {
+  const response = await client.delete(`/contacts/${contactId}`);
+  return response.data;
+}
+
 export default client;
