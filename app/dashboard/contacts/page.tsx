@@ -1,5 +1,8 @@
 "use client";
-import { ContactsTable } from "@/components/Tables/ContactsTable/ContactsTable";
+import {
+  ContactsTable,
+  defaultColumns,
+} from "@/components/Tables/ContactsTable/ContactsTable";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ContactSchema } from "@/schemas/Contact";
 import { getContacts } from "@/services/constantContact.service";
+import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -136,6 +140,21 @@ export default function ContactsPage() {
               setPageSize={handlePageSizeChange}
               onPageChange={handlePageChange}
               isLoading={isLoading}
+              columns={[
+                ...defaultColumns,
+                {
+                  header: "Acciones",
+                  cell: ({ row }) => {
+                    return (
+                      <Link href={`/dashboard/contacts/${row.original.contact_id}`}>
+                        <Button variant="outline" size="icon">
+                          <Eye />
+                        </Button>
+                      </Link>
+                    );
+                  },
+                },
+              ]}
             />
           </CardContent>
         </Card>

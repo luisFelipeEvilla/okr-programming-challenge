@@ -3,6 +3,7 @@ import { z } from "zod";
 export const kindSchema = z.enum(["home", "work", "other"]);
 
 export const contactSchema = z.object({
+  contact_id: z.string().optional(),
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
   email_address: z.object({

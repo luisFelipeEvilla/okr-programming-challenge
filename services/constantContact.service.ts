@@ -59,4 +59,12 @@ export async function createContact(
   return response.data;
 }
 
+export async function getContact(contactId: string): Promise<ContactSchema> {
+  const searchParams = new URLSearchParams();
+  searchParams.set("include", "phone_numbers,street_addresses");
+
+  const response = await client.get(`/contacts/${contactId}?${searchParams.toString()}`);
+  return response.data;
+}
+
 export default client;
