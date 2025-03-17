@@ -7,6 +7,10 @@ export async function middleware(request: NextRequest) {
   // Get the pathname of the request
   const path = request.nextUrl.pathname
 
+  if (path === '/') {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // Define public paths that don't require authentication
   const isPublicPath = path === '/login' || 
                       path === '/api/auth/callback/constantcontact' || 
