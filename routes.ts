@@ -1,4 +1,4 @@
-import { Home, Users, LucideIcon, Upload } from "lucide-react";
+import { Home, Users, LucideIcon, Upload, List } from "lucide-react";
 
 export type Route = {
     url: string;
@@ -22,6 +22,11 @@ export const mainRoutes: Route[] = [
         url: "/dashboard/contacts/import",
         title: "Import",
         icon: Upload,
+    },
+    {
+        url: "/dashboard/tasks",
+        title: "Tasks",
+        icon: List,
     }
 ]
 

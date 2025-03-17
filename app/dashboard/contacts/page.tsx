@@ -1,31 +1,22 @@
 "use client";
 import DeleteContactButton from "@/components/buttons/DeleteContactButton";
 import {
-  ContactsTable,
-  defaultColumns,
+    ContactsTable,
+    defaultColumns,
 } from "@/components/Tables/ContactsTable/ContactsTable";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardTitle,
-  CardHeader,
-  CardContent,
-  CardDescription,
+    Card,
+    CardTitle,
+    CardHeader,
+    CardContent,
+    CardDescription,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
 import { ContactSchema } from "@/schemas/Contact";
-import { getContacts, deleteContact } from "@/services/constantContact.service";
-import { Eye, Trash2 } from "lucide-react";
+import { getContacts, deleteContact, exportContacts } from "@/services/constantContact.service";
+import { Eye } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -44,6 +35,7 @@ export default function ContactsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [cursors, setCursors] = useState<Record<number, string>>({});
   const [pageCache, setPageCache] = useState<Record<number, ContactSchema[]>>({});
+  const router = useRouter();
 
   async function fetchContacts(page: number, cursor?: string | undefined) {
     try {
@@ -147,6 +139,16 @@ export default function ContactsPage() {
 
   const hasNextPage = Boolean(cursors[currentPage]);
 
+  const handleExport = async () => {
+    try {
+      const response = await exportContacts();
+      toast.success("Contacts exported successfully");
+      router.push(`/dashboard/tasks`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to export contacts");
+    }
+  };
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex flex-col gap-4">
@@ -154,7 +156,7 @@ export default function ContactsPage() {
           <Button variant="outline" asChild>
             <Link href="/dashboard/contacts/import">Import CSV</Link>
           </Button>
-          <Button>Export CSV</Button>
+          <Button onClick={handleExport}>Export CSV</Button>
         </div>
         <Card>
           <CardHeader>

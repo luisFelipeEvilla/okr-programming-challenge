@@ -2,7 +2,7 @@ import { getClientSideCookie } from "@/lib/utils";
 import axios from "axios";
 import { api_url, cc_access_token_cookie_name } from "@/config";
 import { ContactSchema } from "@/schemas/Contact";
-
+import { Task } from "@/schemas/Task";
 const { cookies } = await import("next/headers");
 
 const client = axios.create({
@@ -63,12 +63,37 @@ export async function getContact(contactId: string): Promise<ContactSchema> {
   const searchParams = new URLSearchParams();
   searchParams.set("include", "phone_numbers,street_addresses");
 
-  const response = await client.get(`/contacts/${contactId}?${searchParams.toString()}`);
+  const response = await client.get(
+    `/contacts/${contactId}?${searchParams.toString()}`
+  );
   return response.data;
 }
 
 export async function deleteContact(contactId: string) {
   const response = await client.delete(`/contacts/${contactId}`);
+  return response.data;
+}
+
+export async function exportContacts(): Promise<Task> {
+  const response = await client.post("/activities/contact_exports");
+  return response.data;
+}
+
+export async function getTasks(): Promise<{
+  activities: Task[];
+}> {
+  const response = await client.get("/activities");
+  return response.data;
+}
+
+export async function getTask(id: string): Promise<Task> {
+  const response = await client.get(`/activities/${id}`);
+  return response.data;
+}
+
+export async function downloadTaskResults(url: string): Promise<Blob> {
+  console.log("id", url);
+  const response = await client.get(url);
   return response.data;
 }
 
