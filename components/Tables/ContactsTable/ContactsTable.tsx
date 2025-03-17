@@ -10,7 +10,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ContactSchema } from "@/schemas/Contact";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export const defaultColumns: ColumnDef<ContactSchema>[] = [
   {
@@ -134,7 +136,8 @@ interface ContactsTableProps<TData> {
   count?: number;
   currentPage: number;
   hasNextPage: boolean;
-  pageSize?: number;
+  pageSize: number;
+  setPageSize: (pageSize: number) => void;
   onPageChange: (page: number) => Promise<void>;
   isLoading?: boolean;
 }
@@ -146,6 +149,7 @@ export function ContactsTable<TData>({
   currentPage,
   hasNextPage,
   pageSize = 50,
+  setPageSize,
   onPageChange,
   isLoading = false,
 }: ContactsTableProps<TData>) {
@@ -176,8 +180,31 @@ export function ContactsTable<TData>({
     table.setPageIndex(currentPage - 1);
   }, [currentPage, table]);
 
+  useEffect(() => {
+    table.setPageSize(pageSize);
+  }, [pageSize, table]);
+
   return (
     <div className="flex flex-col h-full space-y-4">
+      {/* option to set page size */}
+      <div className="flex items-center justify-end gap-2">
+        <Label>Page Size</Label>
+        <Select
+          value={pageSize.toString()}
+          onValueChange={(value) => setPageSize(parseInt(value))}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select page size" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="25">25</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+            <SelectItem value="500">500</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="rounded-md border flex-1 overflow-hidden">
         <div className="overflow-auto">
           <Table>
@@ -204,7 +231,8 @@ export function ContactsTable<TData>({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    Loading contacts...
+                    {/* loading spinner */}
+                    <Loader2 className="h-12 w-12 animate-spin m-auto" color="blue" />
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows?.length ? (
@@ -239,10 +267,10 @@ export function ContactsTable<TData>({
           {count > 0 ? (
             <>
               Showing {((currentPage - 1) * pageSize) + 1}-
-              {Math.min(currentPage * pageSize, count)} of {count} contact{count !== 1 ? 's' : ''}
+              {Math.min(currentPage * pageSize, count)} of {count} contact{count !== 1 ? "s" : ""}
             </>
           ) : (
-            'No contacts found'
+            "No contacts found"
           )}
         </div>
         <div className="flex items-center space-x-2">

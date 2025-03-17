@@ -82,11 +82,16 @@ export function ImportTable({
   isProcessing,
 }: ImportTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
   const totalPages = Math.ceil(contacts.length / pageSize);
 
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setCurrentPage(1); // Reset to first page when changing page size
   };
 
   // Calculate the current page data
@@ -111,6 +116,7 @@ export function ImportTable({
             currentPage={currentPage}
             hasNextPage={currentPage < totalPages}
             pageSize={pageSize}
+            setPageSize={handlePageSizeChange}
             onPageChange={handlePageChange}
             isLoading={isProcessing}
           />
