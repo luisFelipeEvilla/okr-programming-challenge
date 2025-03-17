@@ -90,10 +90,17 @@ describe('Constant Contact Service', () => {
       const axiosInstance = axios.create();
       (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
-      const result = await getContacts();
+      const result = await getContacts({ });
 
-      expect(result).toEqual([mockContact]);
-      expect(axiosInstance.get).toHaveBeenCalledWith('/contacts');
+      expect(result).toEqual({
+        contacts: [mockContact],
+      });
+
+      const searchParams = new URLSearchParams();
+      searchParams.set('include', 'phone_numbers,street_addresses');
+      searchParams.set('include_count', 'true');
+
+      expect(axiosInstance.get).toHaveBeenCalledWith(`/contacts?${searchParams.toString()}`);
     });
 
     it('should create contact with proper authorization header', async () => {
@@ -114,12 +121,16 @@ describe('Constant Contact Service', () => {
     it('should handle abort signal when creating contact', async () => {
       const mockAbortSignal = new AbortController().signal;
       const mockResponse = {
-        data: mockContact,
+        data: {
+          contacts: [mockContact],
+        },
       };
       const axiosInstance = axios.create();
       (axiosInstance.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       await createContact(mockContact, mockAbortSignal);
+
+      const searchParams = new URLSearchParams();
 
       expect(axiosInstance.post).toHaveBeenCalledWith('/contacts', mockContact, {
         signal: mockAbortSignal,
@@ -143,10 +154,17 @@ describe('Constant Contact Service', () => {
       const axiosInstance = axios.create();
       (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
-      const result = await getContacts();
+      const result = await getContacts({});
 
-      expect(result).toEqual([mockContact]);
-      expect(axiosInstance.get).toHaveBeenCalledWith('/contacts');
+      expect(result).toEqual({
+        contacts: [mockContact],
+      });
+
+      const searchParams = new URLSearchParams();
+      searchParams.set('include', 'phone_numbers,street_addresses');
+      searchParams.set('include_count', 'true');
+      
+      expect(axiosInstance.get).toHaveBeenCalledWith(`/contacts?${searchParams.toString()}`);
     });
 
     it('should create contact with proper authorization header on server-side', async () => {
@@ -176,7 +194,7 @@ describe('Constant Contact Service', () => {
       const axiosInstance = axios.create();
       (axiosInstance.get as ReturnType<typeof vi.fn>).mockRejectedValue(error);
 
-      await expect(getContacts()).rejects.toThrow('Network error');
+      await expect(getContacts({ })).rejects.toThrow('Network error');
     });
 
     it('should throw error when creating contact fails', async () => {

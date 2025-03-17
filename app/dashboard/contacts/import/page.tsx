@@ -21,6 +21,8 @@ export default function ImportContactsPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+  const [failureCount, setFailureCount] = useState(0);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleImport = (parsedContacts: ContactSchema[]) => {
@@ -41,6 +43,8 @@ export default function ImportContactsPage() {
   const handleUpload = async () => {
     setIsProcessing(true);
     setProgress(0);
+    setSuccessCount(0);
+    setFailureCount(0);
     abortControllerRef.current = new AbortController();
 
     for (let i = 0; i < contacts.length; i++) {
@@ -63,6 +67,7 @@ export default function ImportContactsPage() {
           updated[i] = { ...updated[i], status: "success" };
           return updated;
         });
+        setSuccessCount(prev => prev + 1);
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
           break;
@@ -88,6 +93,7 @@ export default function ImportContactsPage() {
           };
           return updated;
         });
+        setFailureCount(prev => prev + 1);
       }
       setProgress(i + 1);
     }
@@ -113,6 +119,8 @@ export default function ImportContactsPage() {
         isOpen={isProcessing}
         progress={progress}
         total={contacts.length}
+        successCount={successCount}
+        failureCount={failureCount}
         onCancel={handleCancel}
         isCanceling={isCanceling}
       />

@@ -9,6 +9,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Card, CardContent, CardTitle, CardHeader, CardFooter, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
+import { useState } from "react";
 
 type ContactStatus = "pending" | "success" | "error";
 
@@ -80,6 +81,19 @@ export function ImportTable({
   onUpload,
   isProcessing,
 }: ImportTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.ceil(contacts.length / pageSize);
+
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate the current page data
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentPageData = contacts.slice(startIndex, endIndex);
+
   return (
     <Card className="">
       <CardHeader>
@@ -91,8 +105,14 @@ export function ImportTable({
       <CardContent>
         <div className="relative w-full overflow-auto">
           <ContactsTable
-            data={contacts}
+            data={currentPageData}
             columns={[...defaultColumns, statusColumn] as ColumnDef<ContactWithStatus>[]}
+            count={contacts.length}
+            currentPage={currentPage}
+            hasNextPage={currentPage < totalPages}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            isLoading={isProcessing}
           />
         </div>
       </CardContent>

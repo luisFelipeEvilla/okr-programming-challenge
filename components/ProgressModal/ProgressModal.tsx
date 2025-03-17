@@ -10,11 +10,14 @@ import {
 } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 interface ProgressModalProps {
   isOpen: boolean
   progress: number
   total: number
+  successCount: number
+  failureCount: number
   title?: string
   description?: string
   onCancel?: () => void
@@ -25,6 +28,8 @@ export function ProgressModal({
   isOpen,
   progress,
   total,
+  successCount,
+  failureCount,
   title = "Uploading Contacts",
   description = "Please wait while your contacts are being uploaded...",
   onCancel,
@@ -41,9 +46,21 @@ export function ProgressModal({
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
           <Progress value={percentage} className="w-full" />
-          <p className="text-sm text-muted-foreground text-center">
-            {progress} of {total} contacts processed ({percentage}%)
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground text-center">
+              {progress} of {total} contacts processed ({percentage}%)
+            </p>
+            <div className="flex justify-center gap-3">
+              <Badge variant="success" className="text-xs">
+                {successCount} Successful
+              </Badge>
+              {failureCount > 0 && (
+                <Badge variant="destructive" className="text-xs">
+                  {failureCount} Failed
+                </Badge>
+              )}
+            </div>
+          </div>
         </div>
         <DialogFooter>
           <Button 

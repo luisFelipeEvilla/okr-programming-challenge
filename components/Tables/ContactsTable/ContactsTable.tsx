@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -83,7 +83,9 @@ export const defaultColumns: ColumnDef<ContactSchema>[] = [
     accessorKey: "phone_numbers",
     header: "Phone",
     cell: ({ row }) => {
-      const phone = row.original.phone_numbers?.map((phone) => phone.phone_number).join(", ");
+      const phone = row.original.phone_numbers
+        ?.map((phone) => phone.phone_number)
+        .join(", ");
       return <div className="w-[150px] truncate">{phone}</div>;
     },
   },
@@ -91,8 +93,14 @@ export const defaultColumns: ColumnDef<ContactSchema>[] = [
     accessorKey: "street_addresses",
     header: "Address",
     cell: ({ row }) => {
-      const address = row.original.street_addresses?.map((address) => address.street).join(", ");
-      return <div className="w-[300px] truncate" title={address}>{address}</div>;
+      const address = row.original.street_addresses
+        ?.map((address) => address.street)
+        .join(", ");
+      return (
+        <div className="w-[300px] truncate" title={address}>
+          {address}
+        </div>
+      );
     },
   },
   {
@@ -111,7 +119,11 @@ export const defaultColumns: ColumnDef<ContactSchema>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at"));
-      return <div className="w-[180px] whitespace-nowrap">{date.toLocaleString()}</div>;
+      return (
+        <div className="w-[180px] whitespace-nowrap">
+          {date.toLocaleString()}
+        </div>
+      );
     },
   },
 ];
@@ -119,13 +131,26 @@ export const defaultColumns: ColumnDef<ContactSchema>[] = [
 interface ContactsTableProps<TData> {
   data: TData[];
   columns?: ColumnDef<TData>[];
+  count?: number;
+  currentPage: number;
+  hasNextPage: boolean;
+  pageSize?: number;
+  onPageChange: (page: number) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export function ContactsTable<TData>({ 
-  data, 
-  columns = defaultColumns as ColumnDef<TData>[]
+export function ContactsTable<TData>({
+  data,
+  columns = defaultColumns as ColumnDef<TData>[],
+  count = 0,
+  currentPage,
+  hasNextPage,
+  pageSize = 50,
+  onPageChange,
+  isLoading = false,
 }: ContactsTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const totalPages = Math.ceil(count / pageSize);
 
   const table = useReactTable({
     data,
@@ -139,10 +164,17 @@ export function ContactsTable<TData>({
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize,
+        pageIndex: currentPage - 1,
       },
     },
+    manualPagination: true,
+    pageCount: totalPages,
   });
+
+  useEffect(() => {
+    table.setPageIndex(currentPage - 1);
+  }, [currentPage, table]);
 
   return (
     <div className="flex flex-col h-full space-y-4">
@@ -166,7 +198,16 @@ export function ContactsTable<TData>({
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Loading contacts...
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-muted/50">
                     {row.getVisibleCells().map((cell) => (
@@ -194,28 +235,33 @@ export function ContactsTable<TData>({
         </div>
       </div>
       <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} contact(s) total.
+        <div className="flex-1 text-sm text-muted-foreground" data-testid="pagination-info">
+          {count > 0 ? (
+            <>
+              Showing {((currentPage - 1) * pageSize) + 1}-
+              {Math.min(currentPage * pageSize, count)} of {count} contact{count !== 1 ? 's' : ''}
+            </>
+          ) : (
+            'No contacts found'
+          )}
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1 || isLoading}
           >
             Previous
           </Button>
-          <div className="flex items-center gap-1 text-sm">
-            <span>
-              {`Page ${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`}
-            </span>
+          <div className="flex items-center gap-1 text-sm font-medium">
+            Page {currentPage} of {totalPages}
           </div>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={!hasNextPage || isLoading}
           >
             Next
           </Button>
