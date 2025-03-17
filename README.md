@@ -2,6 +2,9 @@
 
 A modern web application built with Next.js 14 for managing contacts, featuring import/export capabilities and task management.
 
+![image](https://github.com/user-attachments/assets/a51667d8-6561-474f-8f6a-3d1b5dac9843)
+![image](https://github.com/user-attachments/assets/2abfa11e-04fe-4d9a-85a3-e64bd99160d3)
+
 ## Features
 
 ### Contact Management
@@ -49,11 +52,14 @@ A modern web application built with Next.js 14 for managing contacts, featuring 
 
 - Node.js 18 or later
 - pnpm 9.x or later
-- Constant Contact API credentials
+- API Server running (see:)[https://github.com/luisFelipeEvilla/okr-programming-challenge-api]
 
 ### Installation
 
-1. Clone the repository:
+1. Start API server:
+(see:)[https://github.com/luisFelipeEvilla/okr-programming-challenge-api]
+
+2. 
 ```bash
 git clone [repository-url]
 cd okr-programming-challenge
