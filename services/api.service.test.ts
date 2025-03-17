@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { getContacts, createContact } from './constantContact.service';
+import { getContacts, createContact } from '@/services/api.service';
 import { getClientSideCookie } from '@/lib/utils';
-import { api_url, cc_access_token_cookie_name } from '@/config';
 import type { ContactSchema } from '@/schemas/Contact';
 
 // Mock axios

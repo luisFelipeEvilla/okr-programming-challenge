@@ -7,7 +7,7 @@ import { CreateContactSchema } from "@/dto/contact/createContact.dto";
 const { cookies } = await import("next/headers");
 
 const client = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: api_url,
 });
 
 client.interceptors.request.use(async (config) => {
@@ -45,8 +45,6 @@ export async function getContacts({
   searchParams.set("include_count", "true");
 
   const response = await client.get(`/contacts?${searchParams.toString()}`);
-
-  console.log(response.data);
   return response.data;
 }
 

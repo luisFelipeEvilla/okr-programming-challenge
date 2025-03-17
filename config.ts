@@ -3,6 +3,6 @@ export const client_secret = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_CLIENT_SEC
 export const redirect_uri = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_REDIRECT_URI || "http://localhost:3000/api/auth/callback/constantcontact";
 export const auth_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_AUTH_URL || "https://authz.constantcontact.com/oauth2/default/v1/authorize";
 export const token_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_TOKEN_URL || "https://authz.constantcontact.com/oauth2/default/v1/token";
-export const api_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_API_URL || "http://localhost:3000/api";
+export const api_url = process.env.NEXT_PUBLIC_CONSTANT_CONTACT_API_URL || "http://localhost:3001";
 
 export const cc_access_token_cookie_name = "cc_access_token";
