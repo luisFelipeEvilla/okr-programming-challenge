@@ -44,7 +44,7 @@ export default function TasksPage() {
     try {
       setIsDownloading(taskId);
       // remove the v3 from the url and get only the path
-      const response = await axios.get(`/api?id=${taskId}`);
+      const response = await axios.get(`/api/tasks?id=${taskId}`);
 
       console.log(response.data);
       const blob = new Blob([response.data], { type: "text/csv" });
