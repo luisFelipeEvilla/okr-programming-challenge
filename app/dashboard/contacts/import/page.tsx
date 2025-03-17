@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ImportForm } from "@/components/ImportForm/ImportForm";
+import { ImportForm } from "@/components/Forms/ImportForm/ImportForm";
 import { ImportTable } from "@/components/Tables/ImportTable/ImportTable";
 import { ProgressModal } from "@/components/ProgressModal/ProgressModal";
 import { type ContactSchema } from "@/schemas/Contact";

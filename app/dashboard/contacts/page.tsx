@@ -141,7 +141,7 @@ export default function ContactsPage() {
 
   const handleExport = async () => {
     try {
-      const response = await exportContacts();
+      await exportContacts();
       toast.success("Contacts exported successfully");
       router.push(`/dashboard/tasks`);
     } catch (err) {

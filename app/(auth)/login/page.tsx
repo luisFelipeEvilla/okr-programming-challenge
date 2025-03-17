@@ -1,5 +1,5 @@
 import { GalleryVerticalEnd, CheckCircle2 } from "lucide-react";
-import { LoginForm } from "@/components/Login/LoginForm";
+import { LoginForm } from "@/components/Forms/LoginForm/LoginForm";
 import Image from "next/image";
 import Link from "next/link";
 

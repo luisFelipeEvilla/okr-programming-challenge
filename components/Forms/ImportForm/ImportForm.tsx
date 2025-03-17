@@ -28,7 +28,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ValidationErrors from "@/components/ValidationErrors/ValidationErrors";
 import { csvToContact } from "@/adapters/csvToContact.adapter";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { readCsvFile } from "@/lib/utils";
 
 interface ImportFormProps {
