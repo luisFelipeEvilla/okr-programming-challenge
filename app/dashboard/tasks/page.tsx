@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getTasks } from "@/services/constantContact.service";
+import { getTask, getTasks } from "@/services/api.service";
 import {
   Card,
   CardContent,
@@ -44,10 +44,9 @@ export default function TasksPage() {
     try {
       setIsDownloading(taskId);
       // remove the v3 from the url and get only the path
-      const response = await axios.get(`/api/tasks?id=${taskId}`);
+      const response = await getTask(taskId);
 
-      console.log(response.data);
-      const blob = new Blob([response.data], { type: "text/csv" });
+      const blob = new Blob([response], { type: "text/csv" });
 
       // Create blob URL and trigger download
       const blobUrl = window.URL.createObjectURL(blob);

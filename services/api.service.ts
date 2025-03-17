@@ -76,24 +76,23 @@ export async function deleteContact(contactId: string) {
 }
 
 export async function exportContacts(): Promise<Task> {
-  const response = await client.post("/activities/contact_exports");
+  const response = await client.post("/tasks/export-contacts");
   return response.data;
 }
 
 export async function getTasks(): Promise<{
   activities: Task[];
 }> {
-  const response = await client.get("/activities");
+  const response = await client.get("/tasks");
   return response.data;
 }
 
-export async function getTask(id: string): Promise<Task> {
-  const response = await client.get(`/activities/${id}`);
+export async function getTask(id: string): Promise<Blob> {
+  const response = await client.get(`/tasks/${id}`);
   return response.data;
 }
 
 export async function downloadTaskResults(url: string): Promise<Blob> {
-  console.log("id", url);
   const response = await client.get(url);
   return response.data;
 }
