@@ -37,6 +37,7 @@ export default function ContactsPage() {
       setIsLoading(true);
 
       // Check if we have cached data for this page
+      // this its for the constact contact pagination mode :(
       if (pageCache[page] && !cursor) {
         setContacts(pageCache[page]);
         setCurrentPage(page);
@@ -123,7 +124,8 @@ export default function ContactsPage() {
       setCurrentPage(1);
       setCursors({});
       setPageCache({});
-      await fetchContacts(1);
+      // remove the contact from the contacts array
+      setContacts(contacts.filter((contact) => contact.contact_id !== contactId));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to delete contact");
     } finally {
