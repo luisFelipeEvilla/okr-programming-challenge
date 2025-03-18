@@ -111,7 +111,7 @@ export default function ImportContactsPage() {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="container py-6 space-y-6 mx-auto">
       <ImportForm onImport={handleImport} />
 
       {contacts.length > 0 && (

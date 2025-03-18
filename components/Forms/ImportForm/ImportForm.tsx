@@ -64,7 +64,7 @@ export function ImportForm({ onImport }: ImportFormProps) {
    */
   function handleParse(results: ArrayIterator<[number, unknown]>) {
     try {
-      const contacts: ContactSchema[] = [];
+      let contacts: ContactSchema[] = [];
 
       for (const [index, row] of results) {
         try {
@@ -83,12 +83,28 @@ export function ImportForm({ onImport }: ImportFormProps) {
         }
       }
 
+      const { duplicateEmails } = validateDuplicateEmails(contacts);
+
       if (!form.getValues("skipDuplicates")) {
-        validateDuplicateEmails(contacts);
+        if (duplicateEmails.size > 0) {
+          throw new ZodError([
+            {
+              code: "custom",
+              path: ["email"],
+              message: `Duplicate email addresses found: ${Array.from(
+                duplicateEmails
+              ).join(", ")}`,
+            },
+          ]);
+        }
+      } else {
+        contacts = contacts.filter(
+          (contact) => !duplicateEmails.has(contact.email_address.address)
+        );
       }
 
+
       onImport(contacts);
-      toast.success(`Successfully validated ${contacts.length} contacts`);
     } catch (error) {
       if (error instanceof ZodError) {
         setValidationError(error);
@@ -107,25 +123,18 @@ export function ImportForm({ onImport }: ImportFormProps) {
     const duplicateEmails = new Set<string>();
 
     for (const contact of contacts) {
-      if (emailSet.has(contact.email_address.address)) {
-        duplicateEmails.add(contact.email_address.address);
+      const email = contact.email_address.address.trim();
+      if (emailSet.has(email)) {
+        duplicateEmails.add(email);
       } else {
-        emailSet.add(contact.email_address.address);
+        emailSet.add(email);
       }
     }
 
-    if (duplicateEmails.size > 0) {
-      const error = new ZodError([
-        {
-          code: "custom",
-          path: ["email"],
-          message: `Duplicate email addresses found: ${Array.from(
-            duplicateEmails
-          ).join(", ")}`,
-        },
-      ]);
-      throw error;
-    }
+    return {
+      uniqueEmails: emailSet,
+      duplicateEmails: duplicateEmails,
+    };
   }
 
   return (

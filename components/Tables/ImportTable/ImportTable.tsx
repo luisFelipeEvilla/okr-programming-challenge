@@ -100,7 +100,7 @@ export function ImportTable({
   const currentPageData = contacts.slice(startIndex, endIndex);
 
   return (
-    <Card className="">
+    <Card className="mx-auto">
       <CardHeader>
         <CardTitle>Import Contacts</CardTitle>
         <CardDescription>
