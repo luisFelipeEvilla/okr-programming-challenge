@@ -34,7 +34,7 @@ A modern web application built with Next.js 14 for managing contacts, featuring 
 
 ## Tech Stack
 
-- **Framework**: Next.js 14
+- **Framework**: Next.js 15
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **UI Components**: Shadcn/UI

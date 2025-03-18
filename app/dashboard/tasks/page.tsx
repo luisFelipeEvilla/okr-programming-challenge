@@ -9,11 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Clock
-} from "lucide-react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { Task } from "@/schemas/Task";
 import { Badge } from "@/components/ui/badge";
 import TasksTable from "@/components/Tables/TasksTable/TasksTable";
@@ -93,20 +89,6 @@ export default function TasksPage() {
             />
           </CardContent>
         </Card>
-      </div>
-    </div>
-  );
-}
-
-function NoTasksMessage() {
-  return (
-    <div className="flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed">
-      <div className="flex flex-col items-center gap-2 text-center">
-        <Clock className="h-10 w-10 text-muted-foreground" />
-        <h3 className="font-semibold">No tasks found</h3>
-        <p className="text-sm text-muted-foreground">
-          Tasks will appear here when you import or export contacts
-        </p>
       </div>
     </div>
   );

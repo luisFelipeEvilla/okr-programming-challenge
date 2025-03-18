@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 
     // Calculate expiration date (expires_in is in seconds)
     const expirationDate = new Date();
-    expirationDate.setSeconds(expirationDate.getSeconds() + expires_in);
+    expirationDate.setSeconds(expirationDate.getSeconds() + (expires_in || 86400));
 
     // Create response with redirect
     const redirectUrl = new URL("/dashboard/contacts", request.url);
@@ -51,7 +51,7 @@ export async function GET(request: Request) {
 
     return redirectResponse;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching access token:", error);
     return new Response("Error fetching access token", { status: 500 });
   }
 }

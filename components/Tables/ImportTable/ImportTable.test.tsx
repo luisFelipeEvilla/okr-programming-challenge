@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ImportTable } from "./ImportTable";
-import { ContactSchema } from "@/schemas/Contact";
 import { mockContacts } from "@/mock/contacts";
 
 describe("ImportTable", () => {

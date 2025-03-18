@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LoginForm } from '@/components/Forms/LoginForm/LoginForm';
 import { auth_url, client_id, redirect_uri } from '@/config';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 describe('LoginForm', () => {

@@ -52,7 +52,7 @@ describe('Constant Contact Callback Route', () => {
       'https://example.com/api/auth/callback/constantcontact?code=valid_code'
     );
 
-    const response = await GET(request);
+    await GET(request);
 
     // Verify axios call
     expect(axios.post).toHaveBeenCalledWith(
